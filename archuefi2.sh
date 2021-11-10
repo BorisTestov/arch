@@ -16,11 +16,15 @@ function aur_install () {
 }
 
 function install() {
-	instally $@ --noconfirm
+	pacman -Sy $@ --noconfirm
 }
 
 read -p "Введите имя компьютера: " hostname
 read -p "Введите имя пользователя: " username
+
+print 'Устанавливаем git, обновляем пакеты'
+pacman -Syy
+install git
 
 print 'Прописываем имя компьютера'
 echo $hostname > /etc/hostname
@@ -43,7 +47,6 @@ print 'Создадим загрузочный RAM диск'
 mkinitcpio -p linux
 
 print 'Устанавливаем загрузчик'
-installyy
 install grub efibootmgr 
 grub-install /dev/sda
 
