@@ -50,3 +50,5 @@ print 'Настройка системы'
 genfstab -pU /mnt >> /mnt/etc/fstab
 
 arch-chroot /mnt sh -c "$(curl -fsSL https://raw.githubusercontent.com/BorisTestov/arch/master/archuefi2.sh)"
+umount -a
+reboot

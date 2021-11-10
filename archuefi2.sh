@@ -8,7 +8,6 @@ function aur_install () {
   cd /home/$username
   git clone https://aur.archlinux.org/$1.git
   chown -R $username:users $1
-  !!/PKGBUILD
   cd $1
   sudo -u $username makepkg -si --noconfirm
   cd
@@ -43,9 +42,6 @@ print 'Вписываем KEYMAP=ru FONT=cyr-sun16'
 echo 'KEYMAP=ru' >> /etc/vconsole.conf
 echo 'FONT=cyr-sun16' >> /etc/vconsole.conf
 
-print 'Создадим загрузочный RAM диск'
-mkinitcpio -p linux
-
 print 'Устанавливаем загрузчик'
 install grub efibootmgr 
 grub-install /dev/sda
@@ -66,6 +62,7 @@ print 'Устанавливаем пароль пользователя'
 passwd $username
 
 print 'Устанавливаем SUDO'
+install sudo
 sed -i "s/# %wheel/%wheel/g" /etc/sudoers
 
 print 'Ставим иксы и драйвера'
@@ -112,19 +109,19 @@ tar -xzf config_i3wm.tar.gz -C ~/
 
 print 'Автовход в систему'
 cp /etc/X11/xinit/xserverrc ~/.xserverrc
-wget https://raw.githubusercontent.com/BorisTestov/arch/master/attach/.xinitrc
-mv -f .xinitrc ~/.xinitrc
+wget https://raw.githubusercontent.com/BorisTestov/arch/master/attach/.xinitrc -O /home/$username/.xinitrc
 mkdir /etc/systemd/system/getty@tty1.service.d/
 echo -e '[Service]\nExecStart=\nExecStart=-/usr/bin/agetty --autologin' "$username" '--noclear %I $TERM' > /etc/systemd/system/getty@tty1.service.d/override.conf
 
 print 'Скачивание bashrc'
-wget https://raw.githubusercontent.com/BorisTestov/arch/master/attach/.bashrc
-rm ~/.bashrc
-mv -f .bashrc ~/.bashrc
+wget https://raw.githubusercontent.com/BorisTestov/arch/master/attach/.bashrc -O /home/$username/.bashrc
 
-print 'Скачивание grub.cfg'
-wget https://raw.githubusercontent.com/BorisTestov/arch/master/attach/grub
-mv -f grub /etc/default/grub
+print 'Устанавливаем UEFI-grub'
+install grub os-prober
+echo "GRUB_DISABLE_OS_PROBER=false" >> /etc/default/grub
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+mkinitcpio -p linux
+wget https://raw.githubusercontent.com/BorisTestov/arch/master/attach/grub -O /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 
 print 'Ставим docker'
@@ -146,5 +143,5 @@ print 'Ставим timeshift'
 aur_install timeshift
 
 print 'Установка завершена!'
-read -p "Нажмите Enter для перезагруки"
-reboot
+print "Нажмите Enter для перезагрузки или Ctrl+D чтобы продолжить установку вручную"
+read
