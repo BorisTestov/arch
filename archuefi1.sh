@@ -38,10 +38,10 @@ mkfs.ext4 /dev/sda3 -F -L root
 print 'Монтирование дисков'
 umount -a
 swapoff /dev/sda2
+mount /dev/sda3 /mnt
 mkdir /mnt/boot
 mount /dev/sda1 /mnt/boot
 swapon /dev/sda2
-mount /dev/sda3 /mnt
 
 print 'Установка основных пакетов'
 pacstrap /mnt base dhcpcd linux linux-headers which netctl inetutils base-devel wget linux-firmware neovim wpa_supplicant

@@ -116,12 +116,33 @@ echo -e '[Service]\nExecStart=\nExecStart=-/usr/bin/agetty --autologin' "$userna
 print 'Скачивание bashrc'
 wget https://raw.githubusercontent.com/BorisTestov/arch/master/attach/.bashrc -O /home/$username/.bashrc
 
-print 'Устанавливаем grub'
-install grub os-prober
-wget https://raw.githubusercontent.com/BorisTestov/arch/master/attach/grub -O /etc/default/grub
-grub-install /dev/sda
-grub-mkconfig -o /boot/grub/grub.cfg
+print 'Устанавливаем загрузчик'
+# install grub os-prober
+# wget https://raw.githubusercontent.com/BorisTestov/arch/master/attach/grub -O /etc/default/grub
+# grub-install /dev/sda
+# grub-mkconfig -o /boot/grub/grub.cfg
+# mkinitcpio -p linux
+bootctl install 
+echo ' default arch ' > /boot/loader/loader.conf
+echo ' timeout 0 ' >> /boot/loader/loader.conf
+echo ' editor 0' >> /boot/loader/loader.conf
+echo 'title   Arch Linux' > /boot/loader/entries/arch.conf
+echo "linux  /vmlinuz-linux" >> /boot/loader/entries/arch.conf
+grep vendor_id /proc/cpuinfo | grep Intel
+if [ $ -ne 0 ]; then 
+  install amd-ucode;
+  echo  'initrd /amd-ucode.img ' >> /boot/loader/entries/arch.conf;
+else
+  install intel-ucode;
+  echo ' initrd /intel-ucode.img ' >> /boot/loader/entries/arch.conf
+fi
+echo "initrd  /initramfs-linux.img" >> /boot/loader/entries/arch.conf
+uuid=$(blkid -s PARTUUID /dev/sda) | cut -d'"' -f2
+echo "options root=PARTUUID=$uuid rw" >> /boot/loader/entries/arch.conf
 mkinitcpio -p linux
+aur_install systemd-boot-pacman-hook
+
+
 
 print 'Ставим docker'
 install docker
