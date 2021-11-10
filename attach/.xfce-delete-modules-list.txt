@@ -22,4 +22,3 @@ xfce4-dict
 xfce4-dev-tools
 xfce4-cpugraph-plugin
 xfce4-cpufreq-plugin
-fce4-clipman-plugin

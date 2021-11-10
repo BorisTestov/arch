@@ -15,30 +15,21 @@ timedatectl set-ntp true
 
 echo '2.4 создание разделов'
 (
- echo g;
+	echo d;echo;echo d;echo;echo d;echo;
+	
+	echo g;
 
- echo n;
- echo ;
- echo;
- echo +300M;
- echo y;
- echo t;
- echo 1;
+	echo n;echo;echo;echo +512M;echo y;
 
- echo n;
- echo;
- echo;
- echo +30G;
- echo y;
- 
-  
- echo n;
- echo;
- echo;
- echo;
- echo y;
-  
- echo w;
+	echo n;echo;echo;echo +2G;echo y;
+
+	echo n;echo;echo;echo;echo y;
+
+	echo t;echo 1;echo uefi;
+	echo t;echo 2;echo swap;
+	echo t;echo 3;echo linux;
+
+	echo w;
 ) | fdisk /dev/sda
 
 echo 'Ваша разметка диска'
@@ -46,26 +37,24 @@ fdisk -l
 
 echo '2.4.2 Форматирование дисков'
 
-mkfs.fat -F32 /dev/sda1
-mkfs.ext4  /dev/sda2
-mkfs.ext4  /dev/sda3
+mkfs.fat -F32 /dev/sda1 -L uefi
+mkswap /dev/sda2 -L swap
+mkfs.ext4 /dev/sda3 -L root
 
 echo '2.4.3 Монтирование дисков'
-mount /dev/sda2 /mnt
-mkdir /mnt/home
-mkdir -p /mnt/boot/efi
-mount /dev/sda1 /mnt/boot/efi
-mount /dev/sda3 /mnt/home
+mkdir /mnt/boot
+mount /dev/sda1 /mnt/boot
+swapon /dev/sda2
+mount /dev/sda3 /mnt
 
-echo '3.1 Выбор зеркал для загрузки.'
-rm -rf /etc/pacman.d/mirrorlist
-wget https://git.io/mirrorlist
-mv -f ~/mirrorlist /etc/pacman.d/mirrorlist
+echo '3.1 Обновление зеркал для загрузки.'
+pacman -Sy reflector --noconfirm
+reflector --verbose -l 50 --sort rate --save /etc/pacman.d/mirrorlist
 
 echo '3.2 Установка основных пакетов'
-pacstrap /mnt base base-devel linux linux-firmware nano dhcpcd netctl
+pacstrap /mnt base dhcpcd linux linux-headers which netctl inetutils base-devel wget linux-firmware neovim wpa_supplicant
 
 echo '3.3 Настройка системы'
 genfstab -pU /mnt >> /mnt/etc/fstab
 
-arch-chroot /mnt sh -c "$(curl -fsSL git.io/archuefi2.sh)"
+arch-chroot /mnt sh -c "$(curl -fsSL https://raw.githubusercontent.com/BorisTestov/arch/master/archuefi2.sh)"
