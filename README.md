@@ -4,5 +4,5 @@
 2) Скачать и запустить скрипт командой:
    
    ```bash
-   curl -OL https://git.io/JXDI7 && sh $_
+   curl -OL the-boris.com/arch.sh && sh $_
    ```
