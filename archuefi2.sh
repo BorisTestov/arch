@@ -116,13 +116,12 @@ echo -e '[Service]\nExecStart=\nExecStart=-/usr/bin/agetty --autologin' "$userna
 print 'Скачивание bashrc'
 wget https://raw.githubusercontent.com/BorisTestov/arch/master/attach/.bashrc -O /home/$username/.bashrc
 
-print 'Устанавливаем UEFI-grub'
+print 'Устанавливаем grub'
 install grub os-prober
-echo "GRUB_DISABLE_OS_PROBER=false" >> /etc/default/grub
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-mkinitcpio -p linux
 wget https://raw.githubusercontent.com/BorisTestov/arch/master/attach/grub -O /etc/default/grub
+grub-install /dev/sda
 grub-mkconfig -o /boot/grub/grub.cfg
+mkinitcpio -p linux
 
 print 'Ставим docker'
 install docker
