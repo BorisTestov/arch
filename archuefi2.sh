@@ -139,3 +139,5 @@ echo 'Ставим timeshift'
 aur_install timeshift
 
 echo 'Установка завершена!'
+read -p "Нажмите Enter для перезагруки"
+reboot
