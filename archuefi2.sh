@@ -117,11 +117,6 @@ print 'Скачивание bashrc'
 wget https://raw.githubusercontent.com/BorisTestov/arch/master/attach/.bashrc -O /home/$username/.bashrc
 
 print 'Устанавливаем загрузчик'
-# install grub os-prober
-# wget https://raw.githubusercontent.com/BorisTestov/arch/master/attach/grub -O /etc/default/grub
-# grub-install /dev/sda
-# grub-mkconfig -o /boot/grub/grub.cfg
-# mkinitcpio -p linux
 bootctl install 
 echo ' default arch ' > /boot/loader/loader.conf
 echo ' timeout 0 ' >> /boot/loader/loader.conf
@@ -137,7 +132,7 @@ else
   echo ' initrd /intel-ucode.img ' >> /boot/loader/entries/arch.conf
 fi
 echo "initrd  /initramfs-linux.img" >> /boot/loader/entries/arch.conf
-uuid=$(blkid -s PARTUUID /dev/sda) | cut -d'"' -f2
+uuid=$(blkid -s PARTUUID /dev/sda3) | cut -d'"' -f2
 echo "options root=PARTUUID=$uuid rw" >> /boot/loader/entries/arch.conf
 mkinitcpio -p linux
 aur_install systemd-boot-pacman-hook
