@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function print () {
-	echo -e "\033[36m"$@
+	echo -e "\033[36m"$@"\e[0m"
 }
 
 print 'Настройка языка'

@@ -4,5 +4,5 @@
 2) Скачать и запустить скрипт командой:
    
    ```bash
-   curl -OL the-boris.com/arch.sh && sh $_
+   curl -OL the-boris.com/arch.sh && sh arch.sh
    ```
