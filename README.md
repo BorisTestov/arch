@@ -4,5 +4,5 @@
 2) Скачать и запустить скрипт командой:
    
    ```bash
-   curl -OL https://raw.githubusercontent.com/BorisTestov/arch/master/archuefi1.sh && sh archuefi1.sh
+   curl -OL https://git.io/JXDI7 && sh $_
    ```
