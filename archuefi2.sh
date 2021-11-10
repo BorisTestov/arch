@@ -21,6 +21,15 @@ function install() {
 read -p "Введите имя компьютера: " hostname
 read -p "Введите имя пользователя: " username
 
+print 'Добавляем пользователя'
+useradd -m -g users -G wheel -s /bin/bash $username
+
+print 'Создаем root пароль'
+passwd
+
+print 'Устанавливаем пароль пользователя'
+passwd $username
+
 print 'Устанавливаем git, обновляем пакеты'
 pacman -Syy
 install git
@@ -51,15 +60,6 @@ grub-mkconfig -o /boot/grub/grub.cfg
 
 print 'Ставим программу для Wi-fi'
 install dialog wpa_supplicant 
-
-print 'Добавляем пользователя'
-useradd -m -g users -G wheel -s /bin/bash $username
-
-print 'Создаем root пароль'
-passwd
-
-print 'Устанавливаем пароль пользователя'
-passwd $username
 
 print 'Устанавливаем SUDO'
 install sudo
