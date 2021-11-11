@@ -133,7 +133,7 @@ else
 fi
 echo "initrd  /initramfs-linux.img" >> /boot/loader/entries/arch.conf
 uuid=$(blkid -s PARTUUID /dev/sda3) | cut -d'"' -f2
-echo "options root=PARTUUID=$uuid rw" >> /boot/loader/entries/arch.conf
+echo options root=PARTUUID=$uuid rw >> /boot/loader/entries/arch.conf
 mkinitcpio -p linux
 aur_install systemd-boot-pacman-hook
 
