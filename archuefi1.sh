@@ -6,10 +6,10 @@ function print () {
 
 print 'Настройка языка'
 loadkeys ru
-setfont cyr-sun16
 
 print 'Синхронизация системных часов'
 timedatectl set-ntp true
+timedatectl set-timezone Europe/Nicosia
 
 print 'Создание разделов'
 (
@@ -28,23 +28,24 @@ print 'Создание разделов'
 	echo t;echo 3;echo linux;
 
 	echo w;
-) | fdisk /dev/sda
+) | fdisk /dev/nvme0n1
 
 print 'Форматирование дисков'
-mkfs.fat -F32 /dev/sda1 -I
-mkswap /dev/sda2 -L swap
-mkfs.ext4 /dev/sda3 -F -L root
+mkfs.fat -F32 /dev/nvme0n1p1 -I
+mkswap /dev/nvme0n1p2 -L swap
+mkfs.ext4 /dev/nvme0n1p3 -F -L root
 
 print 'Монтирование дисков'
 umount -a
-swapoff /dev/sda2
-mount /dev/sda3 /mnt
+swapoff /dev/nvme0n1p2
+mount /dev/nvme0n1p3 /mnt
 mkdir /mnt/boot
-mount /dev/sda1 /mnt/boot
-swapon /dev/sda2
+mount /dev/nvme0n1p1 /mnt/boot
+swapon /dev/nvme0n1p2
 
 print 'Установка основных пакетов'
-pacstrap /mnt base dhcpcd linux linux-headers which netctl inetutils base-devel wget linux-firmware neovim wpa_supplicant
+pacstrap -K /mnt base base-devel dhcpcd linux linux-firmware linux-headers which netctl inetutils neovim git grub efibootmgr inotify-tools timeshift vim networkmanager reflector openssh man sudo
+
 
 print 'Настройка системы'
 genfstab -pU /mnt >> /mnt/etc/fstab
